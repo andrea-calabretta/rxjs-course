@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { concat, interval, merge, of } from 'rxjs';
+import { concat, interval, merge, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -8,8 +8,10 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit {
+  #subscription: Subscription = new Subscription;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
     const interval1$ = interval(1000);
@@ -17,7 +19,10 @@ export class AboutComponent implements OnInit {
 
     const result$ = merge(interval1$, interval2$);
 
-    result$.subscribe(console.log);
+    this.#subscription = result$.subscribe(console.log);
+  }
 
+  ngOnDestroy() {
+    this.#subscription.unsubscribe();
   }
 }
