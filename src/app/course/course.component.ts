@@ -37,21 +37,12 @@ export class CourseComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-
         const courseId = this.route.snapshot.params['id'];
-
-
 
     }
 
     ngAfterViewInit() {
 
-
-
-
     }
-
-
-
 
 }
