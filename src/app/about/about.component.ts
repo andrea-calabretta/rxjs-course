@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { concat, interval, merge, of, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { interval } from 'rxjs';
+import { subscribeOn } from 'rxjs/operators';
+import { createHttpObservable } from '../common/util';
+
 
 @Component({
   selector: 'about',
@@ -9,21 +11,14 @@ import { map } from 'rxjs/operators';
 })
 export class AboutComponent implements OnInit {
 
-  #subscription : Subscription = new Subscription;
-
   constructor() { }
 
   ngOnInit() {
-    const interval1$ = interval(1000);
-    const interval2$ = interval1$.pipe(map(val => 10 * val));
 
-    const result$ = merge(interval1$, interval2$);
+    const http$ = createHttpObservable('http://localhost:9000/api/courses');
 
-    this.#subscription = result$.subscribe(console.log);
+    const sub = http$.subscribe(console.log);
 
-  }
-
-  ngOnDestroy(){
-    this.#subscription.unsubscribe();
+    setTimeout(() => sub.unsubscribe(), 0);
   }
 }
