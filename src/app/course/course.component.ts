@@ -57,7 +57,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
         );
 
         const initialLessons$ = this.loadLessons()
-        this.lessons$ = concat(this.loadLessons(), searchLessons$);
+        this.lessons$ = concat(initialLessons$, searchLessons$);
 
     }
 
