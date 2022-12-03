@@ -1,7 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { interval } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { subscribeOn } from 'rxjs/operators';
 import { createHttpObservable } from '../common/util';
+import { Course } from '../model/course';
 
 
 @Component({
@@ -11,14 +13,7 @@ import { createHttpObservable } from '../common/util';
 })
 export class AboutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _http: HttpClient) { }
 
-  ngOnInit() {
-
-    const http$ = createHttpObservable('http://localhost:9000/api/courses');
-
-    const sub = http$.subscribe(console.log);
-
-    setTimeout(() => sub.unsubscribe(), 0);
-  }
+  ngOnInit() {}
 }

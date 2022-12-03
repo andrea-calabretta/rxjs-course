@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 export class HomeComponent implements OnInit {
 
     beginnerCourses$ : Observable<Course[]>;
-
+    intermediateCourses$ : Observable<Course[]>;
     advancedCourses$ : Observable<Course[]>;
 
     constructor(private http: HttpClient) { }
@@ -34,6 +34,12 @@ export class HomeComponent implements OnInit {
           .pipe(
             map( courses => courses
               .filter( (course: Course) => course.category == 'BEGINNER'))
+          );
+
+      this.intermediateCourses$ = courses$
+          .pipe(
+            map( courses => courses
+              .filter( (course: Course) => course.category == 'INTERMEDIATE'))
           );
 
       this.advancedCourses$ = courses$
