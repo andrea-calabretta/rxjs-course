@@ -4,19 +4,14 @@ import {Course} from "../model/course";
 import {
     debounceTime,
     distinctUntilChanged,
-    startWith,
-    tap,
-    delay,
     map,
-    concatMap,
     switchMap,
-    withLatestFrom,
-    concatAll, shareReplay
 } from 'rxjs/operators';
 import {merge, fromEvent, Observable, concat} from 'rxjs';
 import {Lesson} from '../model/lesson';
 import { createHttpObservable } from '../common/util';
 import { StringDecoder } from 'string_decoder';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -30,18 +25,14 @@ export class CourseComponent implements OnInit, AfterViewInit {
     course$: Observable<Course>;
     lessons$: Observable<Lesson[]>;
 
-
     @ViewChild('searchInput', { static: true }) input: ElementRef;
 
-    constructor(private route: ActivatedRoute) {
-
-
-    }
+    constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
     ngOnInit() {
         this.courseId = this.route.snapshot.params['id'];
 
-        this.course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+        this.course$ = this.http.get<Course>(`/api/courses/${this.courseId}`);
 
         this.lessons$ = this.loadLessons()
     }
@@ -62,7 +53,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
     }
 
     loadLessons(search = ''): Observable<Lesson[]>{
-        return createHttpObservable(`/api/lessons?courseId=${this.courseId}&pageSize=100&filter=${search}`)
+        return this.http.get<Lesson[]>(`/api/lessons?courseId=${this.courseId}&pageSize=100&filter=${search}`)
             .pipe(
               map( res => res["payload"])
             );
