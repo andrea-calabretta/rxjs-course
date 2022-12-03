@@ -1,5 +1,3 @@
-
-
 export const COURSES: any = {
 
     0: {
