@@ -1,8 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../model/course";
-import {interval, Observable, of, timer} from 'rxjs';
+import {interval, Observable, of, Subscription, timer} from 'rxjs';
 import {catchError, delayWhen, map, retryWhen, shareReplay, tap} from 'rxjs/operators';
 import { toSubscriber } from 'rxjs/internal-compatibility';
+<<<<<<< HEAD
+=======
+import { ThisReceiver } from '@angular/compiler';
+>>>>>>> b1ed9e5f2ace7c0edc0550595dd1e14e97431953
 
 
 @Component({
