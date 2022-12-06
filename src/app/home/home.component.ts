@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../model/course";
 import {interval, Observable, of, Subscription, timer} from 'rxjs';
-import {catchError, delayWhen, map, retryWhen, shareReplay, tap} from 'rxjs/operators';
-import { toSubscriber } from 'rxjs/internal-compatibility';
+import {catchError, concatMap, delayWhen, exhaustMap, map, mergeMap, retryWhen, shareReplay, switchMap, tap} from 'rxjs/operators';
+import { ajax, AjaxResponse, toSubscriber } from 'rxjs/internal-compatibility';
 import { ThisReceiver } from '@angular/compiler';
+import { HttpClient, HttpContext } from '@angular/common/http';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { ThisReceiver } from '@angular/compiler';
 })
 export class HomeComponent implements OnInit {
 
-    myObservable = interval(1000)
+    myObservable = of( "name/random_name", "name/random_name", "name/random_name")
     subscription = new Subscription;
 
     constructor() {
@@ -21,13 +22,40 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-      const myObserver = {
-        next : val => console.log(val),
-        error : (err) => console.log(err),
-        complete: () => console.log("complete!")
-      }
 
-      this.subscription = this.myObservable.subscribe(myObserver)
+
+      // this.subscription = this.myObservable
+      //   .pipe(
+      //     map( name => ajax(`https://random-data-api.com/api/${name}`)
+      //       .pipe(
+      //         map((ajaxresponse: AjaxResponse) => ajaxresponse.response.name)
+      //       )
+      //       .subscribe(val => console.log(val)))
+      //   )
+      //   .subscribe()
+
+      // this.subscription = this.myObservable
+      // .pipe(
+      //   concatMap( name => ajax(`https://random-data-api.com/api/${name}`) ),
+      //   map((ajaxresponse: AjaxResponse) => ajaxresponse.response.name)
+      // )
+      // .subscribe(val => console.log(val))
+
+
+      this.subscription = this.myObservable
+        .pipe(
+          map( name => ajax(`https://random-data-api.com/api/${name}`)
+                .subscribe((ajaxresponse: AjaxResponse) => console.log(ajaxresponse.response.name))
+              )
+        )
+        .subscribe()
+
+      this.subscription = this.myObservable
+      .pipe(
+        concatMap( name => ajax(`https://random-data-api.com/api/${name}`))
+      )
+      .subscribe((ajaxresponse: AjaxResponse) =>console.log( ajaxresponse.response.name))
+
     }
 
     ngOnDestroy() {
