@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from "../model/course";
-import {interval, Observable, of, timer} from 'rxjs';
+import {interval, Observable, of, Subscription, timer} from 'rxjs';
 import {catchError, delayWhen, map, retryWhen, shareReplay, tap} from 'rxjs/operators';
 import { toSubscriber } from 'rxjs/internal-compatibility';
+import { ThisReceiver } from '@angular/compiler';
 
 
 @Component({
@@ -12,32 +13,25 @@ import { toSubscriber } from 'rxjs/internal-compatibility';
 })
 export class HomeComponent implements OnInit {
 
+    myObservable = interval(1000)
+    subscription = new Subscription;
 
     constructor() {
 
     }
 
     ngOnInit() {
-      const myObservable = new Observable<number>
-      (subscriber => {
-          console.log("Observable executed");
-          subscriber.next(1);
-          setTimeout(() =>  subscriber.next(3), 1000);
-          setTimeout(() =>  subscriber.next(4), 3000);
-          // setTimeout(() =>  {subscriber.error('Failure')}, 5000 );
-          setTimeout(() =>  { subscriber.complete()}, 6000 );
-          return () => {
-            console.log("Teardown logic");
-          }
-    })
+      const myObserver = {
+        next : val => console.log(val),
+        error : (err) => console.log(err),
+        complete: () => console.log("complete!")
+      }
 
-    const myObserver = {
-      next : val => console.log(val),
-      error : (err) => console.log(err),
-      complete: () => console.log("complete!")
+      this.subscription = this.myObservable.subscribe(myObserver)
     }
 
-    myObservable.subscribe(myObserver)
+    ngOnDestroy() {
+      this.subscription.unsubscribe();
     }
 
 }
