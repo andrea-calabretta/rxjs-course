@@ -23,7 +23,7 @@ export class Store {
       .subscribe(
         courses => this.subject.next(courses)
         );
-      }
+  }
 
 
   selectBeginnerCourses(): Observable<Course[]> {
