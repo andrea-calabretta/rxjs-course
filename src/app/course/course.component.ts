@@ -32,6 +32,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
     lessons$: Observable<Lesson[]>;
 
+    course: Course;
 
     @ViewChild('searchInput', { static: true }) input: ElementRef;
 
@@ -44,13 +45,21 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
         this.courseId = this.route.snapshot.params['id'];
 
-        this.course$ = this.store.selectCourseById(this.courseId)
-            .pipe(
-                take(1) //we want just the first value === first()
-            );
+        this.course$ = this.store.selectCourseById(this.courseId);
 
-        forkJoin({ sourceOne: this.course$, sourceTwo: this.loadLessons()})
-            .subscribe(console.log)
+        this.course$.subscribe(course => this.course = course)
+
+        this.loadLessons()
+            .pipe(
+              withLatestFrom(this.course$)
+            )
+            .subscribe(([lessons, course]) => {
+
+                console.log("lessons", lessons);
+
+                console.log("course", course);
+
+            });
 
     }
 
